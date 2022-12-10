@@ -19,11 +19,10 @@ for i, v in enumerate(ins):
   if abs(X - (i % 40)) < 2:
     screen[-1].append('#')
   else:
-    screen[-1].append('.')
+    screen[-1].append(' ')
 
   X += v 
     
 
-print(answer)
 print(sum(answer))
 print('\n'.join([''.join(l) for l in screen]))
