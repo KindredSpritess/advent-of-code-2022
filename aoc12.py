@@ -75,7 +75,36 @@ def shortestPath(graph, source):
     
 #dists, prevs = shortestPath(vertices, start)
 #print(dists[target.id])
-dists, prevs = shortestPath(vertices, target)
 
-print(sorted([(dists[v.id], v.id) for v in vertices if chr(v.e) == 'a'])[0])
+import cProfile
+import pstats
+import io
+from pstats import SortKey
+
+with cProfile.Profile() as pr:
+  dists, prevs = shortestPath(vertices, target)
+  print(sorted([(dists[v.id], v.id) for v in vertices if chr(v.e) == 'a'])[0])
+pr.print_stats()
+
+def bfs(graph, s):
+  cur = set([s.id])
+  visited = set()
+  steps = 0
+
+  while True:
+    nxt = set()
+    for i in cur:
+      visited.add(i)
+      if graph[i].e == 97:
+        return steps
+      for edge in graph[i].edges:
+        if edge.id not in visited:
+          nxt.add(edge.id)
+    
+    cur = nxt
+    steps += 1
+    
+with cProfile.Profile() as pr:
+  print(bfs(vertices, target))
+pr.print_stats()
 
