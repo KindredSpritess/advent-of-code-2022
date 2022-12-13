@@ -72,6 +72,34 @@ def shortestPath(graph, source):
           prev[v.id] = u
     
   return dist, prev
+
+import queue
+def shortestPath2(graph, source):
+  dist = {}
+  prev = {}
+  q = queue.PriorityQueue()
+  processed = set()
+  for i, v in enumerate(graph):
+    dist[i] = 9999
+    if v == source:
+      dist[i] = 0
+    prev[i] = None
+    q.put((dist[i], i))
+
+  while not q.empty():
+    _, u = q.get()
+    if u in processed:
+      continue
+    processed.add(u)
+    for v in graph[u].edges:
+      if v.id not in processed:
+        alt = dist[u] + 1
+        if alt < dist[v.id]:
+          dist[v.id] = alt
+          prev[v.id] = u
+          q.put((alt, v.id))
+    
+  return dist, prev
     
 #dists, prevs = shortestPath(vertices, start)
 #print(dists[target.id])
@@ -82,7 +110,7 @@ import io
 from pstats import SortKey
 
 with cProfile.Profile() as pr:
-  dists, prevs = shortestPath(vertices, target)
+  dists, prevs = shortestPath2(vertices, target)
   print(sorted([(dists[v.id], v.id) for v in vertices if chr(v.e) == 'a'])[0])
 pr.print_stats()
 
