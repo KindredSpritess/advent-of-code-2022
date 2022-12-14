@@ -23,9 +23,9 @@ class Packet(list):
 
 
 answer = 0
-lines = iter(sys.stdin.readlines())
+lines = iter(sys.stdin.read().replace('\n\n', '\n').split('\n'))
 packets = [Packet([[2]]), Packet([[6]])]
-for i, (p1, p2, _) in enumerate(zip_longest(lines, lines, lines, fillvalue='\n')):
+for i, (p1, p2) in enumerate(zip(lines, lines)):
   packets.append(Packet(eval(p1)))
   packets.append(Packet(eval(p2)))
   if packets[-2] < packets[-1]:
