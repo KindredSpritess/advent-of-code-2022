@@ -1,3 +1,4 @@
+import cProfile
 import queue
 import sys
 
@@ -57,32 +58,36 @@ legalMoves = [
   1, -1, 1j, -1j, 0
 ]
 pat = set()
-q = queue.Queue()
+q = queue.SimpleQueue()
 entry = (0, pos, 0)
 q.put(entry)
 pat.add(entry)
 CLOCK = 0
 occupied = set()
-while True:
-  t, pos, target = q.get()
-  t += 1
-  while CLOCK < t:
-    occupied = set()
-    for b in blizzards:
-      b.move(occupied)
-    CLOCK += 1
-    #print(t, occupied)
-  
-  for m in legalMoves:
-    nxt = m + pos
-    if target % 2 and nxt == origin:
-      target = 2
-    elif not target % 2 and nxt == destination:
-      if target:
-        print(t)
-        sys.exit()
-      target = 1
-    entry = t, nxt, target
-    if inBounds(nxt) and nxt not in occupied and entry not in pat:
-      pat.add(entry)
-      q.put(entry)
+try:
+  with cProfile.Profile() as pr:
+    while True:
+      t, pos, target = q.get()
+      t += 1
+      while CLOCK < t:
+        occupied = set()
+        for b in blizzards:
+          b.move(occupied)
+        CLOCK += 1
+        #print(t, occupied)
+      
+      for m in legalMoves:
+        nxt = m + pos
+        if target % 2 and nxt == origin:
+          target = 2
+        elif not target % 2 and nxt == destination:
+          if target:
+            print(t)
+            sys.exit()
+          target = 1
+        entry = t, nxt, target
+        if inBounds(nxt) and nxt not in occupied and entry not in pat:
+          pat.add(entry)
+          q.put(entry)
+finally:
+  pr.print_stats()
