@@ -35,5 +35,3 @@ def snafu(n):
   return snafu
 
 print(snafu(answer))
-for i in range(20):
-  print(i, snafu(i))

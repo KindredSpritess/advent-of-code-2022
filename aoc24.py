@@ -1,5 +1,5 @@
 import cProfile
-import queue
+import collections
 import sys
 
 answer = None
@@ -43,7 +43,6 @@ for j, line in enumerate(lines):
 
 pos = origin = complex(lines[0].index('.')-1,0)
 destination = complex(lines[-1].index('.')-1,len(lines)-1)
-print(origin, destination)
 
 
 def inBounds(position):
@@ -58,16 +57,16 @@ legalMoves = [
   1, -1, 1j, -1j, 0
 ]
 pat = set()
-q = queue.SimpleQueue()
+q = collections.deque()
 entry = (0, pos, 0)
-q.put(entry)
+q.append(entry)
 pat.add(entry)
 CLOCK = 0
 occupied = set()
 try:
   with cProfile.Profile() as pr:
     while True:
-      t, pos, target = q.get()
+      t, pos, target = q.popleft()
       t += 1
       while CLOCK < t:
         occupied = set()
@@ -88,6 +87,6 @@ try:
         entry = t, nxt, target
         if inBounds(nxt) and nxt not in occupied and entry not in pat:
           pat.add(entry)
-          q.put(entry)
+          q.append(entry)
 finally:
   pr.print_stats()
